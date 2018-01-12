@@ -1,0 +1,7 @@
+*.swp
+*.pyc
+.env/*
+neural_net_training_CIFAR.txt
+spring1617_assignment1.zip
+.ipynb_checkpoints/*
+cs231n/datasets/*

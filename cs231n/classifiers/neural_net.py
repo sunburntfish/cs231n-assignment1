@@ -78,8 +78,6 @@ class TwoLayerNet(object):
     #############################################################################
     
     # evaluate class scores with a 2-layer Neural Network
-    ##hidden_layer = np.maximum(0, np.dot(X, W1) + b1) # note, ReLU activation
-    ##scores = np.dot(hidden_layer, W2) + b2
     
     layer_1 = X.dot(W1) + b1
     hidden_layer_output = np.maximum(0, layer_1)
@@ -103,16 +101,6 @@ class TwoLayerNet(object):
     # classifier loss.                                                          #
     #############################################################################
     num_examples = X.shape[0]
-    
-    #### compute the class probabilities
-    ###exp_scores = np.exp(scores)
-    ###probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True) # [N x K]
-    ###
-    #### compute the loss: average cross-entropy loss and regularization
-    ###corect_logprobs = -np.log(probs[range(num_examples),y])
-    ###data_loss = np.sum(corect_logprobs)/num_examples
-    ###reg_loss = 0.5*reg*np.sum(W1*W1) + 0.5*reg*np.sum(W2*W2)
-    ###loss = data_loss + reg_loss
     
     exp_scores = np.exp(scores)
     sum_scores = np.sum(exp_scores, axis=1, keepdims=True)
@@ -146,14 +134,13 @@ class TwoLayerNet(object):
     #   dL/dW = Input' * dL/dOutput
     #   dL/db = 1 * dL/dOutput
     #   dL/dInput = dL/dOutput * W'
-    # first backprop into parameters W2 and b2
     dL_dW2 = np.dot(hidden_layer_output.T, dL_dScores)
     dL_db2 = np.sum(dL_dScores, axis=0, keepdims=True)
-    # next backprop into previous layer
+    # backprop into hidden layer
     dL_dHidden_layer_output = np.dot(dL_dScores, W2.T)
-    # backprop the ReLU non-linearity
+    # backprop ReLU
     dL_dHidden_layer_output[hidden_layer_output <= 0] = 0
-    # finally into W1,b1
+    # backprop into W1,b1
     dL_dW1 = np.dot(X.T, dL_dHidden_layer_output)
     dL_db1 = np.sum(dL_dHidden_layer_output, axis=0, keepdims=True)
     
